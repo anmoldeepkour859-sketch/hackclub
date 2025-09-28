@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <img src="R.jpg">
+    <title>Sheeza's Journey - A Story of Sacrifices</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .game-container {
+            max-width: 900px;
+            width: 95%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-header {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .game-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-screen {
+            padding: 30px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .character-info {
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .choice-counter {
+            background: #74b9ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(116, 185, 255, 0.1);
+            border-left: 5px solid #74b9ff;
+            border-radius: 0 15px 15px 0;
+        }
+
+        .character-speech {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .character-speech.sheeza {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            border-left: 5px solid #ff6b9d;
+        }
+
+        .character-speech.narrator {
+            background: linear-gradient(135deg, #d1c4e9, #b39ddb);
+            border-left: 5px solid #9c27b0;
+        }
+
+        .character-speech.other {
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            border-left: 5px solid #ff9800;
+        }
+
+        .character-name {
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .choices-container {
+            margin-top: 30px;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .choice-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        .choice-button:active {
+            transform: translateY(0);
+        }
+
+        .stats-container {
+            background: linear-gradient(135deg, #fd79a8, #fdcb6e);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #00b894;
+            transition: width 0.5s ease;
+        }
+
+        .ending-container {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .restart-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .restart-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .game-header h1 {
+                font-size: 2em;
+            }
+            
+            .game-screen {
+                padding: 20px;
+            }
+            
+            .story-text, .character-speech {
+                font-size: 1em;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>Sheeza's Journey</h1>
+            <p>A Story of Life's Sacrificial Choices</p>
+        </div>
+
+        <div class="game-screen" id="gameScreen">
+            <div class="character-info">
+                <h3>Meet Sheeza</h3>
+                                <img src="R.jpeg" height="120" width="200">
+
+                <p>A young woman standing at the crossroads of life, facing choices that will define her destiny.</p>
+            </div>
+            
+            <div class="choice-counter">
+                <span id="choiceCounter">Beginning of Journey</span>
+            </div>
+
+            <div id="storyContent">
+                <div class="story-text narrator fade-in">
+                    <div class="character-name">Narrator</div>
+                    Life is a series of crossroads, each demanding a sacrifice. Today, Sheeza faces seven crucial decisions that will determine her path through life.
+                </div>
+
+                <div class="character-speech sheeza fade-in">
+                    <div class="character-name">Sheeza</div>
+                    Every choice shapes who I become. Every sacrifice defines what I value most. I'm ready to begin this journey.
+                </div>
+
+                <div class="choices-container">
+                    <button class="choice-button" onclick="startJourney()">
+                        Begin Sheeza's Journey →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-container" id="statsContainer">
+            <h3 style="text-align: center; margin-bottom: 15px; color: white;">Sheeza's Values</h3>
+            <div class="stats-grid" id="statsGrid">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state variables
+        let currentChoice = 0;
+        let gameStats = {
+            hardwork: 0,
+            balance: 0,
+            career: 0,
+            friendship: 0,
+            passion: 0,
+            necessity: 0,
+            love: 0,
+            independence: 0,
+            health: 0,
+            success: 0,
+            growth: 0,
+            comfort: 0
+        };
+
+        // Story data structure
+        const storyChoices = [
+            {
+                title: "First Crossroads: The Foundation",
+                setup: {
+                    narrator: "Sheeza sits at her desk, surrounded by textbooks and notes. Tomorrow's exam could determine her future.",
+                    character: "Mother",
+                    speech: "Sheeza, you've been studying for hours. Don't you think you should rest?",
+                    sheeza: "I have this important exam tomorrow, but I'm exhausted..."
+                },
+                choices: [
+                    {
+                        text: "Push through and study harder\n(Sacrifice rest for achievement)",
+                        consequence: "Sheeza chose perseverance, sacrificing comfort for long-term goals.",
+                        result: "I passed with flying colors! But I feel so drained...",
+                        stats: { hardwork: 2, health: -1 }
+                    },
+                    {
+                        text: "Take a break and trust in preparation\n(Sacrifice perfectionism for well-being)",
+                        consequence: "Sheeza chose balance, sacrificing the illusion of control for inner peace.",
+                        result: "I did well enough, and I feel refreshed. Maybe balance is key.",
+                        stats: { balance: 2, health: 1 }
+                    }
+                ]
+            },
+            {
+                title: "Second Crossroads: The Temptation",
+                setup: {
+                    narrator: "At a cozy café, Sheeza's phone buzzes with an exciting invitation while her laptop shows an unfinished work project.",
+                    character: "Friend",
+                    speech: "Sheeza! There's this amazing concert tonight! Come with us!",
+                    sheeza: "But I have this work project due tomorrow morning..."
+                },
+                choices: [
+                    {
+                        text: "Go to the concert\n(Sacrifice responsibility for joy)",
+                        consequence: "Sheeza chose spontaneity, sacrificing security for memorable moments.",
+                        result: "That was incredible! Though I'll have to work twice as hard tomorrow...",
+                        stats: { balance: 1, career: -1 }
+                    },
+                    {
+                        text: "Stay and finish the project\n(Sacrifice immediate pleasure for duty)",
+                        consequence: "Sheeza chose reliability, sacrificing immediate gratification for long-term trust.",
+                        result: "The project went perfectly, but I wonder what I missed...",
+                        stats: { career: 2, hardwork: 1 }
+                    }
+                ]
+            },
+            {
+                title: "Third Crossroads: The Ambition",
+                setup: {
+                    narrator: "In a gleaming office building, Sheeza faces a life-changing offer that could reshape her entire world.",
+                    character: "Boss",
+                    speech: "Sheeza, we're offering you a promotion, but it means relocating far from your friends and family.",
+                    sheeza: "This could change my entire future, but at what cost to my relationships?"
+                },
+                choices: [
+                    {
+                        text: "Take the promotion\n(Sacrifice relationships for ambition)",
+                        consequence: "Sheeza chose ambition, sacrificing familiar bonds for unknown possibilities.",
+                        result: "I'm successful now, but the distance from loved ones weighs heavy on my heart.",
+                        stats: { career: 3, success: 1, friendship: -2 }
+                    },
+                    {
+                        text: "Stay with friends and family\n(Sacrifice career growth for relationships)",
+                        consequence: "Sheeza chose connection, sacrificing material progress for emotional richness.",
+                        result: "I may not be climbing the corporate ladder, but I'm surrounded by love.",
+                        stats: { friendship: 3, balance: 1, career: -1 }
+                    }
+                ]
+            },
+            {
+                title: "Fourth Crossroads: The Heart's Calling",
+                setup: {
+                    narrator: "Standing at a literal crossroads, Sheeza contemplates two diverging paths - one leading to a stable office, the other to an art studio.",
+                    character: "Mentor",
+                    speech: "You have two paths, Sheeza. Follow your artistic passion or choose financial stability.",
+                    sheeza: "My heart wants to create, but my mind says I need security..."
+                },
+                choices: [
+                    {
+                        text: "Follow your artistic passion\n(Sacrifice security for fulfillment)",
+                        consequence: "Sheeza chose authenticity, sacrificing predictable comfort for meaningful expression.",
+                        result: "Every day is a struggle, but every day I create something beautiful.",
+                        stats: { passion: 3, growth: 1, necessity: -1 }
+                    },
+                    {
+                        text: "Choose financial stability\n(Sacrifice dreams for practicality)",
+                        consequence: "Sheeza chose pragmatism, sacrificing her heart's desires for life's demands.",
+                        result: "I'm financially stable, but there's an emptiness where my dreams used to be.",
+                        stats: { necessity: 3, comfort: 1, passion: -2 }
+                    }
+                ]
+            },
+            {
+                title: "Fifth Crossroads: The Heart's Dilemma",
+                setup: {
+                    narrator: "In a romantic café setting, Sheeza contemplates a decision that will define how she approaches love and personal freedom.",
+                    character: "Inner Voice",
+                    speech: "Someone special wants to build a life with you, but it means compromising your independence...",
+                    sheeza: "Can I be truly myself while being part of 'us'?"
+                },
+                choices: [
+                    {
+                        text: "Choose love and commitment\n(Sacrifice independence for partnership)",
+                        consequence: "Sheeza chose partnership, sacrificing complete autonomy for shared dreams.",
+                        result: "We're building something beautiful together, though sometimes I miss just being me.",
+                        stats: { love: 3, comfort: 1, independence: -1 }
+                    },
+                    {
+                        text: "Choose independence\n(Sacrifice love for personal freedom)",
+                        consequence: "Sheeza chose self-determination, sacrificing companionship for personal growth.",
+                        result: "I'm exactly who I want to be, but sometimes the silence feels too loud.",
+                        stats: { independence: 3, growth: 1, love: -2 }
+                    }
+                ]
+            },
+            {
+                title: "Sixth Crossroads: The Price of Achievement",
+                setup: {
+                    narrator: "In her office late at night, Sheeza stares at an opportunity that glitters with promise but casts long shadows on her well-being.",
+                    character: "Inner Voice",
+                    speech: "This opportunity could make your career, but it requires sacrificing your health and well-being...",
+                    sheeza: "How much of myself am I willing to give up for success?"
+                },
+                choices: [
+                    {
+                        text: "Prioritize success\n(Sacrifice health for achievement)",
+                        consequence: "Sheeza chose ambition, sacrificing her body's needs for society's recognition.",
+                        result: "I achieved everything I wanted, but what good is success without health to enjoy it?",
+                        stats: { success: 3, career: 1, health: -3 }
+                    },
+                    {
+                        text: "Prioritize health and well-being\n(Sacrifice potential success for vitality)",
+                        consequence: "Sheeza chose wellness, sacrificing external validation for internal strength.",
+                        result: "I may not have reached the top, but I feel alive and vibrant every day.",
+                        stats: { health: 3, balance: 2, success: -1 }
+                    }
+                ]
+            },
+            {
+                title: "Seventh Crossroads: The Final Choice",
+                setup: {
+                    narrator: "At the final crossroads of her journey, Sheeza reflects on all she has built and all she could still become.",
+                    character: "Inner Voice",
+                    speech: "You've reached a comfortable place in life, but there's still so much you could learn and become...",
+                    sheeza: "Is growth worth the risk of losing what I've already gained?"
+                },
+                choices: [
+                    {
+                        text: "Embrace growth and change\n(Sacrifice comfort for transformation)",
+                        consequence: "Sheeza chose transformation, sacrificing safety for the potential of becoming.",
+                        result: "Every day brings new challenges and discoveries. I'm constantly becoming more myself.",
+                        stats: { growth: 3, passion: 1, comfort: -1 }
+                    },
+                    {
+                        text: "Choose comfort and stability\n(Sacrifice growth for peace)",
+                        consequence: "Sheeza chose contentment, sacrificing endless striving for present moment awareness.",
+                        result: "There's beauty in appreciating what I have, though I wonder who I might have become...",
+                        stats: { comfort: 3, balance: 1, growth: -2 }
+                    }
+                ]
+            }
+        ];
+
+        function updateStats(newStats) {
+            for (let stat in newStats) {
+                if (gameStats.hasOwnProperty(stat)) {
+                    gameStats[stat] += newStats[stat];
+                    // Keep stats in reasonable bounds
+                    gameStats[stat] = Math.max(-3, Math.min(5, gameStats[stat]));
+                }
+            }
+            updateStatsDisplay();
+        }
+
+        function updateStatsDisplay() {
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = '';
+            
+            const statLabels = {
+                hardwork: 'Hard Work',
+                balance: 'Balance',
+                career: 'Career Focus',
+                friendship: 'Relationships',
+                passion: 'Passion',
+                necessity: 'Practicality',
+                love: 'Love',
+                independence: 'Independence',
+                health: 'Health',
+                success: 'Success',
+                growth: 'Growth',
+                comfort: 'Comfort'
+            };
+
+            for (let stat in gameStats) {
+                if (gameStats[stat] !== 0) {
+                    const statItem = document.createElement('div');
+                    statItem.className = 'stat-item';
+                    
+                    const value = Math.max(0, gameStats[stat]);
+                    const percentage = Math.min(100, (value / 5) * 100);
+                    
+                    statItem.innerHTML = `
+                        <div><strong>${statLabels[stat]}</strong></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div>Level ${value}</div>
+                    `;
+                    statsGrid.appendChild(statItem);
+                }
+            }
+            
+            document.getElementById('statsContainer').style.display = 'block';
+        }
+
+        function startJourney() {
+            currentChoice = 0;
+            showChoice();
+        }
+
+        function showChoice() {
+            if (currentChoice >= storyChoices.length) {
+                showEnding();
+                return;
+            }
+
+            const choice = storyChoices[currentChoice];
+            const storyContent = document.getElementById('storyContent');
+            const choiceCounter = document.getElementById('choiceCounter');
+            
+            choiceCounter.textContent = choice.title;
+            
+            storyContent.innerHTML = `
+                <div class="story-text narrator fade-in">
+                    <div class="character-name">Narrator</div>
+                    ${choice.setup.narrator}
+                </div>
+
+                <div class="character-speech other fade-in">
+                    <div class="character-name">${choice.setup.character}</div>
+                    ${choice.setup.speech}
+                </div>
+
+                <div class="character-speech sheeza fade-in">
+                    <div class="character-name">Sheeza</div>
+                    ${choice.setup.sheeza}
+                </div>
+
+                <div class="choices-container">
+                    ${choice.choices.map((option, index) => `
+                        <button class="choice-button" onclick="makeChoice(${index})">
+                            ${option.text}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function makeChoice(choiceIndex) {
+            const choice = storyChoices[currentChoice];
+            const selectedChoice = choice.choices[choiceIndex];
+            
+            // Update stats
+            updateStats(selectedChoice.stats);
+            
+            // Show consequence
+            const storyContent = document.getElementById('storyContent');
+            storyContent.innerHTML = `
+                <div class="story-text narrator fade-in">
+                    <div class="character-name">Narrator</div>
+                    ${selectedChoice.consequence}
+                </div>
+
+                <div class="character-speech sheeza fade-in">
+                    <div class="character-name">Sheeza</div>
+                    ${selectedChoice.result}
+                </div>
+
+                <div class="choices-container">
+                    <button class="choice-button" onclick="nextChoice()">
+                        Continue Journey →
+                    </button>
+                </div>
+            `;
+        }
+
+        function nextChoice() {
+            currentChoice++;
+            showChoice();
+        }
+
+        function showEnding() {
+            // Calculate dominant theme
+            const themes = [
+                { name: "Hardworking Achiever", score: gameStats.hardwork + gameStats.career + gameStats.success },
+                { name: "Balanced Soul", score: gameStats.balance + gameStats.health + gameStats.comfort },
+                { name: "Relationship Builder", score: gameStats.friendship + gameStats.love },
+                { name: "Independent Spirit", score: gameStats.independence + gameStats.passion + gameStats.growth },
+                { name: "Practical Realist", score: gameStats.necessity + gameStats.comfort }
+            ];
+            
+            themes.sort((a, b) => b.score - a.score);
+            const dominantTheme = themes[0];
+            
+            const endings = {
+                "Hardworking Achiever": {
+                    description: "Your Sheeza became a driven achiever, sacrificing comfort for accomplishment.",
+                    reflection: "I learned that success comes with a price, but the price taught me what I truly value."
+                },
+                "Balanced Soul": {
+                    description: "Your Sheeza found harmony between ambition and well-being.",
+                    reflection: "I discovered that the best life isn't about choosing extremes, but finding the middle path."
+                },
+                "Relationship Builder": {
+                    description: "Your Sheeza prioritized connections and love above all else.",
+                    reflection: "I learned that wealth is measured not in achievements, but in the depth of our relationships."
+                },
+                "Independent Spirit": {
+                    description: "Your Sheeza valued freedom and personal growth above security.",
+                    reflection: "I chose the uncertain path of becoming myself, and found that authenticity is its own reward."
+                },
+                "Practical Realist": {
+                    description: "Your Sheeza chose the practical path, valuing security and stability.",
+                    reflection: "I learned that there's wisdom in choosing safety, and strength in accepting life's limitations."
+                }
+            };
+            
+            const ending = endings[dominantTheme.name] || endings["Balanced Soul"];
+            
+            const storyContent = document.getElementById('storyContent');
+            const choiceCounter = document.getElementById('choiceCounter');
+            
+            choiceCounter.textContent = "Journey's End";
+            
+            storyContent.innerHTML = `
+                <div class="ending-container fade-in">
+                    <h2>Your Unique Path</h2>
+                    <div class="story-text narrator">
+                        <div class="character-name">Narrator</div>
+                        ${ending.description}
+                    </div>
+                    
+                    <div class="character-speech sheeza">
+                        <div class="character-name">Sheeza</div>
+                        ${ending.reflection}
+                    </div>
+                    
+                    <div class="character-speech sheeza">
+                        <div class="character-name">Sheeza</div>
+                        Life isn't about avoiding sacrifices—it's about making the ones that align with who you want to become. Every ending is a new beginning. Every sacrifice, a lesson in what matters most.
+                    </div>
+                    
+                    <div class="story-text narrator">
+                        <div class="character-name">Narrator</div>
+                        Thank you for walking this journey with Sheeza. May your own sacrifices lead you to wisdom.
+                    </div>
+                    
+                    <button class="restart-button" onclick="restartGame()">
+                        Begin a New Journey
+                    </button>
+                </div>
+            `;
+        }
+
+        function restartGame() {
+            currentChoice = 0;
+            gameStats = {
+                hardwork: 0,
+                balance: 0,
+                career: 0,
+                friendship: 0,
+                passion: 0,
+                necessity: 0,
+                love: 0,
+                independence: 0,
+                health: 0,
+                success: 0,
+                growth: 0,
+                comfort: 0
+            };
+            
+            document.getElementById('statsContainer').style.display = 'none';
+            document.getElementById('choiceCounter').textContent = 'Beginning of Journey';
+            
+            const storyContent = document.getElementById('storyContent');
+            storyContent.innerHTML = `
+                <div class="story-text narrator fade-in">
+                    <div class="character-name">Narrator</div>
+                    Life is a series of crossroads, each demanding a sacrifice. Today, Sheeza faces seven crucial decisions that will determine her path through life.
+                </div>
+
+                <div class="character-speech sheeza fade-in">
+                    <div class="character-name">Sheeza</div>
+                    Every choice shapes who I become. Every sacrifice defines what I value most. I'm ready to begin this journey again, exploring new paths.
+                </div>
+
+                <div class="choices-container">
+                    <button class="choice-button" onclick="startJourney()">
+                        Begin Sheeza's Journey →
+                    </button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
